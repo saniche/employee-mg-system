@@ -5,6 +5,6 @@ namespace EmployeeManagementAPI.Repositories
 {
     public interface IEmployeeRepository : IDbRepository<Employee>
     {
-        Task<Employee> GetByEmailAsync(string email);
+        Task<Employee?> GetByEmailAsync(string email);
     }
 }

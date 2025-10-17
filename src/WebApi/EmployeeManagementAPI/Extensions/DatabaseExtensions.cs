@@ -9,8 +9,12 @@ public static class DatabaseExtensions
         using (var scope = app.Services.CreateScope())
         {
             var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            dbContext.Database.Migrate();
-            SeedAsync(dbContext).GetAwaiter().GetResult();
+            dbContext.Database.MigrateAsync().GetAwaiter().GetResult();
+            if (app.Environment.IsDevelopment())
+            {
+                //seed data only in development
+                SeedAsync(dbContext).GetAwaiter().GetResult();
+            }
         }
         return app;
     }
