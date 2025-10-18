@@ -1,9 +1,10 @@
 //Generate Irepository interface for generic CRUD operations, with pagination support.
 using System.Linq.Expressions;
+using EmployeeManagementAPI.Models;
 
 namespace EmployeeManagementAPI.Repositories
 {
-    public interface IDbRepository<T> where T : class
+    public interface IDbRepository<T> where T : EntityBase
     {
         Task<IEnumerable<T>> GetAllAsync();
         Task<T?> GetByIdAsync(int id);

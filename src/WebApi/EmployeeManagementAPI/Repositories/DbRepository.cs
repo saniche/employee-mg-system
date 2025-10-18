@@ -1,12 +1,13 @@
 // generate DbRepository class for generic data access that implements IDbRepository interface
 using EmployeeManagementAPI.Data;
+using EmployeeManagementAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace EmployeeManagementAPI.Repositories
 {
     // make class abstract, all functions virtual to allow overrides in derived classes
-    public abstract class DbRepository<T> : IDbRepository<T> where T : class
+    public abstract class DbRepository<T> : IDbRepository<T> where T : class, EntityBase
     {
         private readonly AppDbContext _context;
         private readonly DbSet<T> _dbSet;

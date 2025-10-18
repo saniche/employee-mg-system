@@ -2,36 +2,37 @@
 //add namespace
 namespace EmployeeManagementAPI.Dtos
 {
-    public class EmployeeDto
+    public class EmployeeBaseDto
     {
-        public int Id { get; set; }
-        public string LastName { get; set; }
-        public string FirstName { get; set; }
-        public string Email { get; set; }
-        public string PhoneNumber { get; set; }
-        public string Position { get; set; }
+        public string LastName { get; set; } = default!;
+        public string FirstName { get; set; } = default!;
+        public string Email { get; set; } = default!;
+        public string PhoneNumber { get; set; } = default!;
+        public string Position { get; set; } = default!;
         public decimal Salary { get; set; }
     }
 
-    public class EmployeeUpdateDto
+    public class EmployeeDto : EmployeeBaseDto
     {
         public int Id { get; set; }
-        public string LastName { get; set; }
-        public string FirstName { get; set; }
-        public string Email { get; set; }
-        public string PhoneNumber { get; set; }
-        public string Position { get; set; }
-        public decimal Salary { get; set; }
+    }
+
+    public class EmployeeUpdateDto : EmployeeDto
+    {
+        public DateTime BirthDate { get; set; }
     }
 
 
-    public class EmployeeCreateDto
+    public class EmployeeCreateDto : EmployeeBaseDto
     {
-        public string LastName { get; set; }
-        public string FirstName { get; set; }
-        public string Email { get; set; }
-        public string PhoneNumber { get; set; }
-        public string Position { get; set; }
-        public decimal Salary { get; set; }
+        public DateTime BirthDate { get; set; }
+    }
+
+
+
+    public class EmployeeDetailsDto : EmployeeBaseDto
+    {
+        public string FullName { get => $"{FirstName} {LastName}"; }
+        public DateTime BirthDate { get; set; }
     }
 }

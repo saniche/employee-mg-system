@@ -24,9 +24,13 @@ builder.Services.AddSwaggerGen();
 //add controllers
 builder.Services.AddControllers();
 
-// add dbcontext service
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("WebApiDatabase")));
+// add dbcontext service (with audit interceptor)
+builder.Services.AddScoped<AuditSaveChangesInterceptor>();
+builder.Services.AddDbContext<AppDbContext>((sp, options) =>
+{
+    options.UseSqlite(builder.Configuration.GetConnectionString("WebApiDatabase"));
+    options.AddInterceptors(sp.GetRequiredService<AuditSaveChangesInterceptor>());
+});
 
 //add cors to allow any origin, method, and header
 builder.Services.AddCors(options =>
@@ -60,7 +64,12 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.InitialiseDatabaseAsync();
+// Initialize the database in non-test environments only. Tests use a custom factory
+// which controls database lifecycle and seeding.
+if (!app.Environment.IsEnvironment("Testing"))
+{
+    app.InitialiseDatabaseAsync();
+}
 
 app.UseCors("AllowAll");
 
@@ -68,3 +77,6 @@ app.UseCors("AllowAll");
 app.MapControllers();
 
 app.Run();
+
+// Public partial Program for WebApplicationFactory in integration tests
+public partial class Program { }

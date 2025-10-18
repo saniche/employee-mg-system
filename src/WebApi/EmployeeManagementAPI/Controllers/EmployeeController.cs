@@ -49,8 +49,9 @@ namespace EmployeeManagementAPI.Controllers
         [ProducesResponseType(typeof(IEnumerable<EmployeeDto>), 200)]
         public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetPagedEmployees([FromQuery] int pageNumber, [FromQuery] int pageSize)
         {
-            var employees = await _employeeRepository.GetPagedAsync(pageNumber, pageSize);
-            var employeeDtos = employees.Adapt<IEnumerable<EmployeeDto>>();
+            var paged = await _employeeRepository.GetPagedAsync(pageNumber, pageSize);
+            // Map the items collection only. PagedResult<T> cannot be adapted directly to IEnumerable<TDestination>.
+            var employeeDtos = paged.Items.Adapt<IEnumerable<EmployeeDto>>();
             return Ok(employeeDtos);
         }
 
@@ -62,7 +63,10 @@ namespace EmployeeManagementAPI.Controllers
         {
             var employee = employeeDto.Adapt<Employee>();
             await _employeeRepository.AddAsync(employee);
-            return CreatedAtAction(nameof(GetEmployeeById), new { id = employee.Id }, employeeDto);
+
+            // adapt from saved entity so DTO includes generated Id and any DB-set fields
+            var createdDto = employee.Adapt<EmployeeDto>();
+            return CreatedAtAction(nameof(GetEmployeeById), new { id = employee.Id }, createdDto);
         }
 
         //define update employee endpoint
