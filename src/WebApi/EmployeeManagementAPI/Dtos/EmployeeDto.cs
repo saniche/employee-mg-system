@@ -30,7 +30,7 @@ namespace EmployeeManagementAPI.Dtos
 
 
 
-    public class EmployeeDetailsDto : EmployeeBaseDto
+    public class EmployeeDetailsDto : EmployeeDto
     {
         public string FullName { get => $"{FirstName} {LastName}"; }
         public DateTime BirthDate { get; set; }

@@ -12,6 +12,7 @@ namespace EmployeeManagementAPI.Validators
             RuleFor(x => x.Email).NotEmpty().EmailAddress();
             RuleFor(x => x.Position).NotEmpty().MaximumLength(100);
             RuleFor(x => x.Salary).GreaterThanOrEqualTo(0);
+            RuleFor(x => x.BirthDate).LessThan(DateTime.Now.AddYears(-10)).WithMessage("BirthDate must be in the past and greater than 10 years ago.");
         }
     }
 
@@ -26,6 +27,7 @@ namespace EmployeeManagementAPI.Validators
             RuleFor(x => x.Email).NotEmpty().EmailAddress();
             RuleFor(x => x.Position).NotEmpty().MaximumLength(250);
             RuleFor(x => x.Salary).GreaterThanOrEqualTo(0);
+            RuleFor(x => x.BirthDate).LessThan(DateTime.Now.AddYears(-10)).WithMessage("BirthDate must be in the past and greater than 10 years ago.");
         }
     }
 }

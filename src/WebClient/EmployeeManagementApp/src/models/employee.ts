@@ -7,4 +7,5 @@ export interface Employee {
   salary: number;
   phoneNumber: string;
   email: string;
+  birthDate: Date;
 }

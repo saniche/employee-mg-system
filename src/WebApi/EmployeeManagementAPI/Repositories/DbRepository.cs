@@ -47,6 +47,8 @@ namespace EmployeeManagementAPI.Repositories
             {
                 _dbSet.Remove(entity);
             }
+
+            await _context.SaveChangesAsync();
         }
 
         public virtual async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)

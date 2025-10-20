@@ -1,1 +1,86 @@
-<p>employee-form works!</p>
+<!-- Form to create or edit an employee -->
+<h2 class="text-center my-5">{{isEditing? 'Edit' : 'Create'}} Employee</h2>
+
+<div class="text-danger text-center" *ngIf="errorMessage != ''">
+    {{errorMessage}}
+</div>
+
+<!-- apply bootstrap styling to the form -->
+
+<form *ngIf="formVisible" #employeeForm="ngForm" (ngSubmit)="onSubmit(employeeForm)" class="employee-form container" novalidate>
+  <fieldset class="mb-4 p-3 border rounded">
+    <legend class="w-auto px-2">Personal information</legend>
+
+    <div class="row g-3">
+      <div class="col-12 col-md-4">
+        <label for="firstName" class="form-label">First name</label>
+        <input type="text" required #firstName="ngModel" id="firstName" name="firstName" class="form-control" [(ngModel)]="employee.firstName">
+        
+        <div *ngIf="firstName.invalid && (firstName.touched || firstName.dirty)">
+             <div class="text-danger"  *ngIf="firstName.errors?.['required']"> First name is required.</div>
+        </div>
+    </div>
+
+      <div class="col-12 col-md-4">
+        <label for="lastName" class="form-label">Last name</label>
+        <input type="text" id="lastName" name="lastName" class="form-control" required minlength="2" [(ngModel)]="employee.lastName" #lastNameCtrl="ngModel">
+        <div class="invalid-feedback d-block" *ngIf="lastNameCtrl.invalid && (lastNameCtrl.dirty || lastNameCtrl.touched)">
+          <div *ngIf="lastNameCtrl.errors?.['required']">Last name is required.</div>
+          <div *ngIf="lastNameCtrl.errors?.['minlength']">Last name must be at least 2 characters.</div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-4">
+        <label for="birthDate" class="form-label">Birth date</label>
+        <input type="date" id="birthDate" name="birthDate" class="form-control" [(ngModel)]="birthDateString" (ngModelChange)="onBirthDateChange($event)">
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="mb-4 p-3 border rounded">
+    <legend class="w-auto px-2">Contact</legend>
+    <div class="row g-3">
+      <div class="col-12 col-md-6">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" id="email" name="email" class="form-control" required email [(ngModel)]="employee.email" #emailCtrl="ngModel">
+        <div class="invalid-feedback d-block" *ngIf="emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched)">
+          <div *ngIf="emailCtrl.errors?.['required']">Email is required.</div>
+          <div *ngIf="emailCtrl.errors?.['email']">Enter a valid email address.</div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6">
+        <label for="phoneNumber" class="form-label">Phone</label>
+        <input type="text" id="phoneNumber" name="phoneNumber" class="form-control" required pattern="^[0-9+\-() ]{7,20}$" [(ngModel)]="employee.phoneNumber" #phoneCtrl="ngModel">
+        <div class="invalid-feedback d-block" *ngIf="phoneCtrl.invalid && (phoneCtrl.dirty || phoneCtrl.touched)">
+          <div *ngIf="phoneCtrl.errors?.['required']">Phone is required.</div>
+          <div *ngIf="phoneCtrl.errors?.['pattern']">Enter a valid phone number (digits, +, -, parentheses allowed).</div>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="mb-4 p-3 border rounded">
+    <legend class="w-auto px-2">Job</legend>
+    <div class="row g-3">
+      <div class="col-12 col-md-6">
+        <label for="position" class="form-label">Position</label>
+        <input type="text" id="position" name="position" class="form-control" required minlength="2" [(ngModel)]="employee.position" #positionCtrl="ngModel">
+        <div class="invalid-feedback d-block" *ngIf="positionCtrl.invalid && (positionCtrl.dirty || positionCtrl.touched)">
+          <div *ngIf="positionCtrl.errors?.['required']">Position is required.</div>
+          <div *ngIf="positionCtrl.errors?.['minlength']">Position must be at least 2 characters.</div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6">
+        <label for="salary" class="form-label">Salary</label>
+        <input type="number" id="salary" name="salary" class="form-control" [(ngModel)]="employee.salary">
+      </div>
+    </div>
+  </fieldset>
+
+  <div class="d-flex gap-2 justify-content-end">
+    <button type="submit" class="btn btn-primary">{{ isEditing ? 'Save' : 'Add Employee' }}</button>
+    <button type="button" class="btn btn-secondary" (click)="cancel()">Cancel</button>
+  </div>
+</form>

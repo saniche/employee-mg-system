@@ -12,9 +12,11 @@ namespace EmployeeManagementAPI.Controllers
     public class EmployeeController : ControllerBase
     {
         private readonly IEmployeeRepository _employeeRepository;
+        private readonly ILogger<EmployeeController> _logger;
 
-        public EmployeeController(IEmployeeRepository employeeRepository)
+        public EmployeeController(ILogger<EmployeeController> logger, IEmployeeRepository employeeRepository)
         {
+            _logger = logger;
             _employeeRepository = employeeRepository;
         }
 
@@ -32,14 +34,18 @@ namespace EmployeeManagementAPI.Controllers
         //add response type attributes, possible 200 OK or 404 Not Found
         [ProducesResponseType(typeof(EmployeeDto), 200)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<EmployeeDto>> GetEmployeeById(int id)
+        public async Task<ActionResult<EmployeeDetailsDto>> GetEmployeeById(int id)
         {
             var employee = await _employeeRepository.GetByIdAsync(id);
             if (employee == null)
             {
                 return NotFound();
             }
-            var employeeDto = employee.Adapt<EmployeeDto>();
+            var employeeDto = employee.Adapt<EmployeeDetailsDto>();
+
+            _logger.LogInformation("Retrieved employee details for employee with ID {EmployeeId}", id);
+            _logger.LogInformation("Employee Details: {@birthDate}", employeeDto.BirthDate);
+
             return Ok(employeeDto);
         }
 
