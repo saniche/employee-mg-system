@@ -48,8 +48,8 @@ export class EmployeeFormComponent implements OnInit  {
           this.birthDateString = this.formatDateForInput(this.employee.birthDate);
         },
         error: (error) => {
-          console.error('Error fetching employee:', error);
-          this.errorMessage = 'Failed to load employee data.';
+            console.error('Error fetching employee:', error);
+            this.errorMessage = this.getApiErrorMessage(error, 'Failed to load employee data.');
           this.formVisible = false;
         }
       });
@@ -106,7 +106,7 @@ export class EmployeeFormComponent implements OnInit  {
       },
       error: (error) => {
         console.error('Error creating employee', error);
-        this.errorMessage = `Failed to create employee. Please try again. status: ${error.status}, message: ${error.message} `;
+        this.errorMessage = this.getApiErrorMessage(error, `Failed to create employee. Please try again.`);
       }
     });
   } 
@@ -119,13 +119,31 @@ export class EmployeeFormComponent implements OnInit  {
       },
       error: (error) => {
         console.error('Error updating employee', error);
-        this.errorMessage = `Failed to update employee. Please try again. status: ${error.status}, message: ${error.message} `;
+        this.errorMessage = this.getApiErrorMessage(error, `Failed to update employee. Please try again.`);
       }
     });
+  }
+
+  // Extract a friendly message from common API error shapes
+  private getApiErrorMessage(error: any, fallback = 'An unexpected error occurred'): string {
+    // Typical HttpErrorResponse may have: error (body), status, statusText, message
+    try {
+      if (!error) return fallback;
+      // If backend returns { message: '...' }
+      if (error.error && typeof error.error === 'object' && error.error.message) return `${error.error.message}`;
+      // If backend returns a string body
+      if (error.error && typeof error.error === 'string') return error.error;
+      if (error.message) return error.message;
+      if (error.status && error.statusText) return `status ${error.status}: ${error.statusText}`;
+      return fallback;
+    } catch (e) {
+      return fallback;
+    }
   }
 
   cancel() {
     console.log('Employee creation/editing cancelled');
     // Here you would typically reset the form or navigate away
+    this.router.navigate(['/employees']);
   }
 }
